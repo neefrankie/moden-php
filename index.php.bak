@@ -1,0 +1,47 @@
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+use Aura\Router\RouterContainer;
+
+$request = Zend\Diactoros\ServerRequestFactory::fromGlobals(
+    $_SERVER,
+    $_GET,
+    $_POST,
+    $_FILES
+);
+
+$routerContainer = new RouterContainer();
+
+$map = $routerContainer->getMap();
+
+$map->get('blog.read', '/blog/{id}', function ($request) {
+    $id = (int) $request->getAttribute('id');
+    $response = new Zend\Diactoros\Response();
+    $response->getBody()->write("You asked for blog entry {$id}.");
+    return $response;
+});
+
+$matcher = $routerContainer->getMatcher();
+
+$route = $matcher->match($request);
+
+if (!$route) {
+    echo "No route found for the request.";
+    exit;
+}
+
+foreach($route->attributes as $key => $val) {
+    $request = $request->withAttribute($key, $val);
+}
+
+$callable = $route->handler;
+$response = $callable($request, $response);
+
+foreach($response->getHeaders() as $name => $values) {
+    foreach ($values as $value) {
+        header(sprintf('%s: %s', $name, $value), false);
+    }
+}
+
+http_response_code($response->getStatusCode());
+echo $response->getBody();

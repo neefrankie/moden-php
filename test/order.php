@@ -1,23 +1,27 @@
 <?php
+ini_set('date.timezone','Asia/Shanghai');
 
-require 'settings.php';
-require 'lib/Payload.php';
-require 'lib/UnifiedOrder.php';
+require dirname(__FILE__) . './../settings.php';
+require dirname(__FILE__) . './../lib/Payload.php';
+require dirname(__FILE__) . './../lib/Order.php';
+require dirname(__FILE__) . './../lib/Util.php';
 
-$bytes = random_bytes(16);
-$nonce = bin2hex($bytes);
+$payload = new Payload($payConfig["apiKey"]);
 
-$order = new \FTC\WxPay\Order('192006250b4c09247ec02edce69f6a2d');
+$now = new DateTime();
+const TIME_LAYOUT = "YmdHis";
 
-$order->setAppId($payConfig['appId'])
-    ->setMchId($payConfig['mchId'])
-    ->setDeviceInfo('WEB')
-    ->setNonce($nonce);
+$payload->setAppId($payConfig["appId"])
+    ->setMchID($payConfig["mchId"])
+    ->setNonce(Util::generateNonce())
+    ->setBody("test")
+    ->setAttach("test")
+    ->setDealNo($now->format(TIME_LAYOUT) . Util::generateNonce(9))
+    ->setPrice(1)
+    ->setStartTime($now->format(TIME_LAYOUT))
+    ->setExpireTime($now->add(new DateInterval("PT5M"))->format(TIME_LAYOUT))
+    ->setGoodsTag("test")
+    ->setNotifyUrl("http://paysdk.weixin.qq.com/example/notify.php")
+    ->setDealType("MWEB");
 
-$order->sign();
-
-var_dump($order);
-
-// echo "Signature: $order->getSignature()";
-
-// echo "XML: $order->toXML()";
+var_dump($payload->toXML());

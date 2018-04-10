@@ -59,7 +59,9 @@ class WxPayApi
 		$xml = $inputObj->ToXml();
 		
 		$startTimeStamp = self::getMillisecond();//请求开始时间
+		
 		$response = self::postXmlCurl($xml, $url, false, $timeOut);
+
 		$result = WxPayResults::Init($response);
 		self::reportCostTime($url, $startTimeStamp, $result);//上报请求花费时间
 		

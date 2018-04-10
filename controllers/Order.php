@@ -1,16 +1,17 @@
 <?php
 
-class Payload
+class Order
 {
     private $payload = [];
-    private $signature = "";
     private $key;
 
-    function __construct(string $key) {
+    function __contruct(string $key)
+    {
         $this->key = $key;
     }
 
-    public function add(string $key, string $value) {
+    // Not exposed to external
+    protected function add(string $key, string $value) {
         $this->payload[$key] = $value;
     }
 
@@ -24,6 +25,11 @@ class Payload
         $query = [];
         foreach ($this->payload as $k => $v) {
             if ($v == "" || is_array($v)) {
+                continue;
+            }
+
+            // Ignore sign key if exists
+            if ($k == "sign") {
                 continue;
             }
             $query[] = "$k=$v";
@@ -43,17 +49,19 @@ class Payload
     public function sign() {
         $signature = $this->generateSignature();
 
-        $this->signature = $signature;
-
+        $this->payload['sign'] = $signature;
+        
+        // sign_type could be omitted for MD5
+        
         return $this;
     }
 
     public function getSignature() {
-        return $this->signature;
+        return $this->payload['sign'];
     }
 
     public function isSigned() {
-        return $this->signature != "" && strlen($this->signature == 32);
+        return array_key_exists('sign', $this->payload);
     }
 
     public function toXML() {
@@ -69,12 +77,17 @@ class Payload
             }
         }
 
-        $xml .= "<sign><![CDATA[$this->signature]]></sign>";
-
         $xml .= "</xml>";
         return $xml;
     }
 
+    public function getPayload() {
+        return $this->payload;
+    }
+
+    /**
+     * Required fields for all types of order
+     */
     public function setAppId(string $id)
     {
         $this->add('appid', $id);
@@ -87,54 +100,27 @@ class Payload
         return $this;
     }
 
-    public function setDeviceInfo(string $info) {
-        $this->add('device_info', $info);
-        return $this;
-    }
-
     public function setNonce(string $nonce)
     {
         $this->add('nonce_str', $nonce);
         return $this;
     }
 
-    public function setBody(string $body)
+    public function setNotifyUrl(string $url)
     {
-        $this->add('body', $body);
+        $this->add('notify_url', $url);
         return $this;
     }
 
-    public function setDetail(string $detail)
-    {
-        $this->add('detail', $detail);
-        return $this;
-    }
-
-    public function setAttach(string $v) {
-        $this->add('attach', $v);
-        return $this;
-    }
-
-    public function setDealNo(string $no)
+    public function setOrderNo(string $no)
     {
         $this->add('out_trade_no', $no);
         return $this;
     }
-
+    
+    // The following are optional
     public function setCurrency(string $code = 'CNY') {
         $this->add('fee_type', $code);
-        return $this;
-    }
-
-    public function setPrice(int $amount)
-    {
-        $this->add('total_fee', $amount);
-        return $this;
-    }
-
-    public function setUserIp(string $ip)
-    {
-        $this->add('spbill_create_ip', $ip);
         return $this;
     }
 
@@ -146,36 +132,6 @@ class Payload
     public function setExpireTime(string $at)
     {
         $this->add('time_expire', $at);
-        return $this;
-    }
-
-    public function setGoodsTag(string $tag)
-    {
-        $this->add('goods_tag', $tag);
-        return $this;
-    }
-
-    public function setNotifyUrl(string $url)
-    {
-        $this->add('notify_url', $url);
-        return $this;
-    }
-
-    public function setDealType(string $type)
-    {
-        $this->add('trade_type', $type);
-        return $this;
-    }
-
-    public function setPoductId(string $id)
-    {
-        $this->add('product_id', $id);
-        return $this;
-    }
-
-    public function setOpendId(string $id)
-    {
-        $this->add('openid', $id);
         return $this;
     }
 }

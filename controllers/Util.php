@@ -4,7 +4,7 @@ class Util
 {
     public static function post(string $payload, string $endpoint, int $timeout = 30)
     {
-        $ch = curl_init($nedpoint);
+        $ch = curl_init($endpoint);
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, TRUE);
@@ -25,5 +25,23 @@ class Util
     {
         $bytes = random_bytes($size);
         return bin2hex($bytes);
+    }
+
+    public static function parseXML(string $xml)
+    {
+        libxml_disable_entity_loader(true);
+
+        $v = json_decode(
+            json_encode(
+                simplexml_load_string(
+                    $xml, 
+                    'SimpleXMLElement',
+                    LIBXML_NOCDATA
+                )
+            ),
+            true
+        );
+
+        return $v;
     }
 }

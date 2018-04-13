@@ -1,5 +1,71 @@
-{% extends "layout.html" %}
+{% extends "layouts/base.html" %}
 
 {% block main %}
-  <h1>Hello, {{name}}.</h1>
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-5 col-xl-4">
+    <div class="mt-4">
+      {% if not userinfo %}
+      <h4 class="text-center">登录FT中文网</h4>
+
+      <form method="post">
+
+        {% if errors.credentials %}
+          <div class="form-errortext text-center">{{errors.credentials}}</div>
+        {% endif %}
+
+        <div class="form-group">
+          <label for="credentialsEmail">邮箱</label>
+          <input class="form-control"
+          id="credentialsEmail"
+          type="email"
+          name="credentials[email]"
+          value="{{credentials.email}}"
+          placeholder="电子邮箱"
+          required>
+
+          {% if errors.notFound %}
+          <small class="form-text text-muted">该邮箱尚未注册，您可以使用该邮箱<a href="/signup?source=login&email={{errors.notFound}}">创建FT中文网账号</a></small>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="credentialsPassword">密码</label>
+          <input class="form-control"
+          id="credentialsPassword"
+          type="password"
+          name="credentials[password]"
+          placeholder="密码"
+          required>
+        </div>
+        <div class="form-check clearfix">
+            <input class="form-check-input"
+            id="rememberMe"
+            type="checkbox"
+            name="rememberMe"
+            value="true"
+            checked>
+            <label for="rememberMe">记住我</label>
+
+            <a class="float-right" href="/password-reset">忘记密码?</a>
+        </div>
+
+        <button class="btn btn-block btn-primary" type="submit">登录</button>
+
+      </form>
+      <p class="text-center pt-3">还没有FT中文网账号?<a href="/signup?source=login">创建</a></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-5 col-xl-4">
+    <div class="mt-4">
+      <h5>其他登录方式</h5>
+      <ul>
+        <li><a href="/login/weixin">微信</a></li>
+        <li><a href="">微博</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
 {% endblock %}

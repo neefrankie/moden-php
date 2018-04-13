@@ -22,9 +22,7 @@ $container['logger'] = function ($c) {
     $logger->pushHandler($file_handler);
     return $logger;
 };
-$container['view'] = new Twig_Environment($loader, [
-    'cache' => '.cache'
-]);
+$container['view'] = new Twig_Environment($loader);
 
 $container['db'] = function ($c) {
     $db = $c['settings']['db'];
@@ -43,10 +41,15 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
+$app->get('/', function (Request $request, Response $response) {
+    $body = $this->view->render('index.html');
+    $response->getBody()->write($body);
+});
+
 $app->get('/hello/{name}', function (Request $request, Response $response, array $args) {
     $this->logger->addInfo('Something interesting happened');
     $name = $args['name'];
-    $body = $this->view->render('index.html', [
+    $body = $this->view->render('hello.html', [
         'name' => $name
     ]);
     $response->getBody()->write($body);

@@ -38,3 +38,8 @@ php-fpm --fpm-config=/usr/local/etc/php/7.2/php-fpm.conf
 ```
 
 Nginx receive external request, and forward all request to `index.php`.
+
+## URL
+
+* `localhost:port` opens index page
+* `localhost:port/hello/<whatever-name>` returns string `hello <whatever-name>`

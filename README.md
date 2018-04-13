@@ -11,9 +11,9 @@ server {
     listen 80;
     server_name example.com;
     index index.php;
-    error_log /path/to/example.error.log;
-    access_log /path/to/example.access.log;
-    root /path/to/public;
+    error_log /home/logs/modern-php.error.log;
+    access_log /home/logs/modern-php.access.log;
+    root /home/modern-php;
 
     location / {
         try_files $uri /index.php$is_args$args;

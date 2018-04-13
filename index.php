@@ -71,27 +71,4 @@ $app->get('/user/{id}', function (Request $request, Response $response, array $a
     return $response;
 });
 
-$app->get('/wxpay', function (Request $request, Response $response, array $args) {
-    $body = $this->view->render('wxpay.html');
-
-    $response->getBody()->write($body);
-
-    return $response;
-});
-
-$app->get('/wxpay/h5', function (Request $request, Response $response, array $args) {
-    $payment = new Payment($wxConfig['appId'], $wxConfig['mchId'], $wxConfig['notifyUrl']);
-
-    $order = new H5Order($wxConfig['key']);
-    $order->setBody('FTC Membership - FTChinese')
-        ->setPrice(1)
-        ->setUserIp($_SERVER['REMOTE_ADDR']);
-
-    $resp = $payment->unifiedOrder($order);
-
-    $response->getBody()->write(json_encode($resp));
-
-    return $response;
-});
-
 $app->run();

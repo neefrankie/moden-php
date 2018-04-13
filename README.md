@@ -1,3 +1,10 @@
+## Install dependecies
+```
+php bin/composer.phar install
+```
+
+Run with PHP built-in server: `php -S localhost:5000`
+
 ## Deploy with Nginx
 ```
 server {

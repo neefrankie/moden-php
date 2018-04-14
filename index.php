@@ -57,6 +57,11 @@ $app->get('/hello/{name}', function (Request $request, Response $response, array
     return $response;
 });
 
+$app->get('/php/info', function (Request $reqeust, Response $response, array $args) {
+    $response->getBody()->write(phpinfo());
+    return $response;
+});
+
 // $app->get('/user/{id}', function (Request $request, Response $response, array $args) {
 //     $sql = 'SELECT user_name, email FROM cmstmp01.userinfo WHERE user_id = :id';
 //     $stmt = $this->db->prepare($sql);

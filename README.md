@@ -48,7 +48,7 @@ Nginx receive external request, and forward all request to `index.php`.
 
 Start PHP 7.2:
 
-In 7.2's `php-fpm.conf`, set pool detinitions: `listen = 127.0.0.1:9000`
+In 7.2's `php-fpm.conf`, set pool definitions: `listen = 127.0.0.1:9000`
 ```
 php-fpm --fpm-config=/usr/local/etc/php/7.2/php-fpm.conf
 ```
